@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Action Plan & What-If — FinMentor{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex fm-shell bg-[#FAF7F5]">
+
+
+  <!-- Sidebar -->
+  <aside class="w-60 fm-sidebar px-5 py-6">
+    <div class="text-xl font-semibold mb-8 text-white">FinMentor</div>
+    <nav class="space-y-2 text-sm">
+      <a href="{% url 'dashboard' %}" class="fm-sidebar-link">Dashboard</a>
+      <a href="{% url 'spending' %}" class="fm-sidebar-link">Spending Insights</a>
+      <a href="{% url 'savings' %}" class="fm-sidebar-link">Savings Analysis</a>
+      <a href="{% url 'loans_emi' %}" class="fm-sidebar-link">Loans & EMI</a>
+      <a href="{% url 'action_plan' %}" class="fm-sidebar-link fm-sidebar-link--active">
+        Action Plan & What-If
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 px-10 py-8">
+
+    <!-- Header -->
+    <header class="mb-6">
+      <p class="text-xs uppercase tracking-wide text-black/80">
+            action plan & what if simulation
+          </p>
+      <h1 class="text-2xl font-semibold text-black">
+        Action Plan & Financial What-If
+      </h1>
+      <p class="text-sm text-black/70 mt-1">
+        Try changing your inputs to see how different decisions could affect your financial health.
+      </p>
+    </header>
+
+    <!-- CURRENT STATUS -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">Current Financial Health Score</p>
+        <p class="text-2xl font-semibold text-indigo-600">
+          {{ score }}/100
+        </p>
+        <p class="text-sm text-gray-700 mt-1">
+          {{ health_label }}
+        </p>
+      </div>
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">Savings Rate</p>
+        <p class="text-xl font-semibold">
+          {{ savings_rate }}%
+        </p>
+      </div>
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">EMI-to-Income Ratio</p>
+        <p class="text-xl font-semibold">
+          {{ emi_to_income_pct }}%
+        </p>
+      </div>
+
+
+    </section>
+
+    <!-- MAIN GRID -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ACTION PLAN (RULE BASED) -->
+      <div class="fm-card p-5">
+        <h2 class="font-semibold mb-3">Your 90-Day Action Plan</h2>
+
+        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+          {% for point in action_points %}
+            <li>{{ point }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- WHAT-IF + ML RE-PREDICTION -->
+      <div class="fm-card p-5">
+
+        <form id="mlWhatIfForm" class="space-y-4 text-sm">
+
+          <div>
+            <label class="block mb-1">Monthly Income (₹)</label>
+            <input id="wiIncome" type="number" class="w-full border rounded-lg px-3 py-2"
+                   value="">
+          </div>
+
+          <div>
+            <label class="block mb-1">Monthly Savings (₹)</label>
+            <input id="wiSavings" type="number" class="w-full border rounded-lg px-3 py-2"
+                   value="">
+          </div>
+
+          <div>
+            <label class="block mb-1">Total Monthly EMIs (₹)</label>
+            <input id="wiEmi" type="number" class="w-full border rounded-lg px-3 py-2"
+                   value="">
+          </div>
+
+          <div>
+            <label class="block mb-1">Monthly Expenses (₹)</label>
+            <input id="wiExpense" type="number"
+                  class="w-full border rounded-lg px-3 py-2"
+                  value="">
+          </div>
+
+
+          <button type="button" id="runMlBtn"
+            class="w-full bg-emerald-600 text-white rounded-lg py-2 font-medium">
+            Re-Run Prediction
+          </button>
+        </form>
+
+        <!-- RESULT -->
+        <div id="mlResult" class="hidden mt-4">
+          <p class="text-sm">
+            <span class="text-gray-500">New Predicted Score:</span>
+            <span class="font-semibold text-indigo-600">
+              <span id="newScore"></span>/100
+            </span>
+          </p>
+          <p class="text-sm text-gray-600 mt-1" id="scoreLabel"></p>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+
+<script>
+function num(v){return parseFloat(v)||0;}
+
+document.getElementById("runMlBtn").onclick = async function () {
+  const payload = {
+    income: num(wiIncome.value),
+    expense: num(wiExpense.value),
+    emi: num(wiEmi.value),
+    savings: num(wiSavings.value)
+  };
+
+  if (payload.income <= 0) {
+    alert("Income must be greater than zero");
+    return;
+  }
+
+  const res = await fetch("{% url 'action_plan_predict' %}", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": "{{ csrf_token }}"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if (data.error) {
+    alert(data.error);
+    return;
+  }
+
+  document.getElementById("newScore").textContent = data.new_score;
+  document.getElementById("scoreLabel").textContent = data.label;
+  document.getElementById("mlResult").classList.remove("hidden");
+};  
+</script>
+{% endblock %}

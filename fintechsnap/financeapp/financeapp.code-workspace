@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../fintechsnap"
+		},
+		{
+			"path": "../venv"
+		}
+	],
+	"settings": {
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false
+}
+
+}

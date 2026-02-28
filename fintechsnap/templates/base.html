@@ -1,0 +1,122 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}FinMentor{% endblock %}</title>
+
+  <!-- Tailwind CDN (fast prototyping) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <meta name="description" content="FinMentor — Your 30-second personal money mentor" />
+  <link rel="icon" type="image/png" href="{% static 'images/logo2.png' %}">
+  {% block head %}{% endblock %}
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  
+</head>
+<body class="antialiased m-0 min-h-screen flex flex-col">
+
+  <!-- NAV -->
+  <header class="bg-[#E6DDD4] border-b border-[#D4C8BC]">
+
+
+  <div class="max-w-6xl mx-auto px-5 py-1 flex items-center justify-between">
+
+    <a href="{% url 'landing' %}" class="flex items-center gap-3">
+      <div class="w-12 h-12 rounded-full overflow-hidden bg-white flex items-center justify-center" >
+        <img src="{% static 'images/logo2.png' %}"
+            alt="FinMentor Logo"
+            class="w-full h-full object-cover">
+      </div>
+      <span class="font-bold text-lg text-slate-700 hover:text-orange-700" >FinMentor</span>
+    </a>
+
+
+    <nav class="flex items-center gap-6 ml-auto" >
+
+      {% if request.path != "/" %}
+        <a href="{% url 'landing' %}" class="text-sm text-slate-700 font-medium hover:text-orange-700 transition">
+          Home
+        </a>
+      {% endif %}
+
+      {% if request.path != "/about/" %}
+        <a href="{% url 'about' %}" class="text-sm text-slate-700 hover:text-orange-700 transition">
+          About
+        </a>
+      {% endif %}
+
+      {% if request.path != "/input/" %}
+        <a href="{% url 'input' %}" class="text-sm text-slate-700 hover:text-orange-700 hover:text-[#38BDF8]">
+          Get Started
+        </a>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+
+        {% if request.path != "/dashboard/" %}
+          <a href="{% url 'dashboard' %}" class="text-sm text-slate-700 hover:text-orange-700 hover:text-[#38BDF8]">
+            Dashboard
+          </a>
+        {% endif %}
+
+        <form method="post" action="{% url 'logout' %}" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="text-sm border px-3 py-1 rounded text-slate-700 hover:text-orange-700 hover:bg-red-500 hover:border-red-500">
+            Logout
+          </button>
+        </form>
+
+      {% else %}
+
+        {% if request.path != "/accounts/login/" %}
+          <a href="{% url 'login' %}" class="text-sm text-slate-700 hover:text-orange-700 hover:text-[#38BDF8]">
+            Login
+          </a>
+        {% endif %}
+
+        {% if request.path != "/accounts/register/" %}
+          <a href="{% url 'register' %}" class="text-sm ml-2 bg-orange-700 text-white px-3 py-1 rounded hover:bg-orange-700 transition">
+            Register
+          </a>
+        {% endif %}
+
+      {% endif %}
+    </nav>
+
+  </div>
+</header>
+
+  <main class="flex-grow page-bg">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="py-5 bg-[#333333] text-center text-white text-xs border-t border-slate-200">
+    <p>
+      © 2025 FinMentor ·
+      <a href="mailto:finmentor.contactus@email.com" class="hover:underline">
+        finmentor.contactus@email.com
+      </a>
+      |
+      <a href="tel:+919XXXXXXXXX" class="hover:underline">
+        +91 9XXXXXXXXX
+      </a>
+    </p>
+  </footer>
+
+
+
+  {% block scripts %}{% endblock %}
+<script>
+  document.querySelectorAll('[data-bg]').forEach(el => {
+    el.style.backgroundImage = `url('${el.dataset.bg}')`;
+  });
+  document.querySelectorAll('[data-width]').forEach(el => {
+    el.style.width = el.dataset.width + '%';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,296 @@
+  {% extends "base.html" %}
+  {% load static %}
+  {% block title %}Loans & EMI — FinMentor{% endblock %}
+
+  {% block content %}
+  <div class="min-h-screen flex fm-shell bg-[#FAF7F5]">
+
+
+    <!-- Sidebar -->
+    <aside class="w-60 fm-sidebar px-5 py-6">
+      <div class="text-xl font-semibold mb-8 text-white">FinMentor</div>
+
+      <nav class="space-y-2 text-sm">
+        <a href="{% url 'dashboard' %}" class="fm-sidebar-link">Dashboard</a>
+        <a href="{% url 'spending' %}" class="fm-sidebar-link">Spending Insights</a>
+        <a href="{% url 'savings' %}" class="fm-sidebar-link">Savings Analysis</a>
+        <a href="{% url 'loans_emi' %}" class="fm-sidebar-link fm-sidebar-link--active">
+          Loans & EMI
+        </a>
+        <!--<a href="{% url 'action_plan' %}" class="fm-sidebar-link">Action Plan &amp; What-If</a>-->
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 px-10 py-8">
+
+      <!-- Header -->
+      <header class="mb-6">
+        <p class="text-xs uppercase tracking-wide text-black/80">
+              loans & emi
+            </p>
+        <h1 class="text-2xl font-semibold text-black">
+          EMI Load & Loan Risk Assessment
+        </h1>
+        <p class="text-sm text-black/70 mt-1">
+          Your EMI-to-income balance shows how manageable your current loans are.
+        </p>
+      </header>
+
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+        <div class="fm-card p-4">
+          <p class="text-xs text-gray-500">Safe EMI Threshold</p>
+          <p class="mt-2 text-2xl font-semibold" id="safeThreshold"></p>
+          <p class="text-xs text-gray-500 mt-1">
+            Recommended upper limit
+          </p>
+        </div>
+
+        <div class="fm-card p-4">
+          <p class="text-xs text-gray-500">Current EMI-to-Income Ratio</p>
+          <p class="mt-2 text-xl font-semibold" id="summaryEmiPercent">0%</p>
+        </div>
+
+        <div class="fm-card p-4">
+          <p class="text-xs text-gray-500">Loan Risk Signal</p>
+          <p class="mt-2 text-sm font-medium" id="summaryLoanNote">
+            Not evaluated yet
+          </p>
+        </div>
+
+      </section>
+
+
+      <!-- MAIN GRID -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- LEFT: ML FEATURE INPUT -->
+        <div class="fm-card p-5">
+          <h2 class="font-semibold mb-3">
+            Existing Income & EMIs 
+          </h2>
+
+          <form class="space-y-4">
+
+            <div>
+              <label class="block text-sm font-medium mb-1">
+                Monthly Income (₹)
+              </label>
+              <input id="monthlyIncome" type="number" value="{{ income|default:0 }}" min="0"
+                class="w-full rounded-lg border-gray-300 px-3 py-2 text-sm"
+                placeholder="e.g. 40000">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">
+                Existing Monthly EMIs (₹)
+              </label>
+              <input id="existingEmis" type="number" value="{{ existing_emis|default:0 }}" min="0"
+                class="w-full rounded-lg border-gray-300 px-3 py-2 text-sm"
+                placeholder="e.g. 8000">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">
+                Other Fixed Obligations (₹)
+              </label>
+              <input id="fixedObligations" type="number" min="0"
+                class="w-full rounded-lg border-gray-300 px-3 py-2 text-sm"
+                placeholder="rent, insurance, fees">
+            </div>
+
+            <button type="button" id="calculateSafetyBtn"
+              class="w-full bg-emerald-600 text-white rounded-lg py-2 text-sm font-medium">
+              Evaluate EMI Risk
+            </button>
+          </form>
+
+          <!-- RESULT -->
+          <div id="safetyResult" class="hidden mt-5">
+            <h3 class="text-sm font-semibold mb-2">EMI Risk Summary</h3>
+
+            <p class="text-sm">
+              EMI Load:
+              <strong>
+                ₹<span id="currentEmiTotal"></span>
+                (<span id="emiPercent"></span>%)
+              </strong>
+            </p>
+
+            <p class="text-sm mt-1">
+              Free cash after EMIs:
+              <strong>₹<span id="freeCash"></span></strong>
+            </p>
+
+            <div id="riskBadge" class="mt-3 p-3 rounded-lg text-sm">
+              <span id="riskLabel" class="font-semibold"></span> —
+              <span id="riskMessage"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: WHAT-IF (NOT ML) -->
+        <div class="fm-card p-5">
+          <h2 class="font-semibold mb-3">
+            New Loan What-If Simulation
+          </h2>
+
+          <form class="space-y-4">
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Loan Amount (₹)</label>
+              <input id="loanAmount" type="number" min="0"
+                class="w-full rounded-lg border-gray-300 px-3 py-2 text-sm">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <input id="interestRate" type="number" step="0.01"
+                class="rounded-lg border-gray-300 px-3 py-2 text-sm"
+                placeholder="Interest %">
+              <input id="tenureYears" type="number" min="1"
+                class="rounded-lg border-gray-300 px-3 py-2 text-sm"
+                placeholder="Tenure (yrs)">
+            </div>
+
+            <button type="button" id="calculateLoanBtn"
+              class="w-full bg-emerald-600 text-white rounded-lg py-2 text-sm font-medium">
+              Simulate Loan EMI
+            </button>
+          </form>
+
+          <div id="emiResult" class="hidden mt-4 text-sm">
+            <p>Monthly EMI: <strong>₹<span id="calculatedEmi"></span></strong></p>
+            <p>Total Payable: ₹<span id="totalPayable"></span></p>
+            <p>Total Interest: ₹<span id="totalInterest"></span></p>
+
+            <p id="emiSafetyMessage" class="mt-3 text-sm"></p>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+  {% endblock %}
+
+  {% block scripts %}
+  {{ block.super }}
+  <script>
+  const SAFE_THRESHOLD = 40;
+  document.getElementById("safeThreshold").textContent = SAFE_THRESHOLD + "% of income";
+
+  function toNum(v){ return parseFloat(v) || 0; }
+  function fmt(n){ return n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,","); }
+
+  // ---------------- EMI RISK CHECK ----------------
+  document.getElementById("calculateSafetyBtn").onclick = function(){
+
+    const income = toNum(document.getElementById("monthlyIncome").value);
+    const emis = toNum(document.getElementById("existingEmis").value);
+    const fixed = toNum(document.getElementById("fixedObligations").value);
+
+    if(income <= 0){
+      alert("Enter valid income");
+      return;
+    }
+
+    const ratio = (emis / income) * 100;
+
+    let label = "";
+    let msg = "";
+    let colorClass = "";
+
+    if(ratio <= 25){
+      label = "Low Risk";
+      msg = "Your EMI load is comfortable.";
+      colorClass = "bg-green-100 text-green-700";
+    }
+    else if(ratio <= 40){
+      label = "Moderate Risk";
+      msg = "Be cautious before taking new loans.";
+      colorClass = "bg-yellow-100 text-yellow-700";
+    }
+    else{
+      label = "High Risk";
+      msg = "High EMI burden. Risk of financial stress.";
+      colorClass = "bg-red-100 text-red-700";
+    }
+
+    // ✅ Update summary section (after label is defined)
+    document.getElementById("summaryEmiPercent").textContent =
+        ratio.toFixed(1) + "%";
+
+    document.getElementById("summaryLoanNote").textContent = label;
+
+    // ✅ Update detail section
+    document.getElementById("currentEmiTotal").textContent = fmt(emis);
+    document.getElementById("emiPercent").textContent = ratio.toFixed(1);
+    document.getElementById("freeCash").textContent =
+        fmt(Math.max(income - emis - fixed, 0));
+
+    document.getElementById("riskLabel").textContent = label;
+    document.getElementById("riskMessage").textContent = msg;
+
+    document.getElementById("riskBadge").className =
+        "mt-3 p-3 rounded-lg text-sm " + colorClass;
+
+    document.getElementById("safetyResult").classList.remove("hidden");
+  };
+
+
+
+  // ---------------- NEW LOAN SIMULATION ----------------
+  document.getElementById("calculateLoanBtn").onclick = function(){
+
+    const income = toNum(monthlyIncome.value);
+    const existingEmi = toNum(existingEmis.value);
+
+    const P = toNum(loanAmount.value);
+    const r = toNum(interestRate.value) / 1200;
+    const n = toNum(tenureYears.value) * 12;
+
+    if(P <= 0 || r <= 0 || n <= 0){
+      alert("Enter valid loan details");
+      return;
+    }
+
+    // EMI formula
+    const emi = P * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+
+    const totalPay = emi * n;
+    const totalInterestVal = totalPay - P;
+
+    calculatedEmi.textContent = fmt(emi);
+    totalPayable.textContent = fmt(totalPay);
+    totalInterest.textContent = fmt(totalInterestVal);
+
+    // 🔥 Advanced: Recalculate EMI ratio including new loan
+    if(income > 0){
+      const newTotalEmi = existingEmi + emi;
+      const newRatio = (newTotalEmi / income) * 100;
+
+      let safetyMsg = "";
+
+      if(newRatio <= 25){
+        safetyMsg = "After this loan → EMI Ratio: " + newRatio.toFixed(1) + "% (Safe)";
+      }
+      else if(newRatio <= 40){
+        safetyMsg = "After this loan → EMI Ratio: " + newRatio.toFixed(1) + "% (Borderline)";
+      }
+      else{
+        safetyMsg = "After this loan → EMI Ratio: " + newRatio.toFixed(1) + "% (High Risk)";
+      }
+
+      emiSafetyMessage.textContent = safetyMsg;
+    }
+
+    emiResult.classList.remove("hidden");
+  };
+  window.onload = function(){
+    document.getElementById("calculateSafetyBtn").click();
+  };
+
+  </script>
+
+  {% endblock %}

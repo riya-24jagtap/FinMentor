@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Delete Goal — FinMentor{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 p-6 bg-white shadow rounded text-center">
+  <h1 class="text-lg font-semibold mb-3 text-red-600">
+    Delete Goal?
+  </h1>
+
+  <p class="text-sm text-gray-700 mb-4">
+    Are you sure you want to delete <strong>{{ goal.name }}</strong>?
+  </p>
+
+  <form method="POST" class="mt-4">
+    {% csrf_token %}
+    <button type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+      Yes, Delete
+    </button>
+  </form>
+
+  <a href="{% url 'savings' %}" class="block mt-4 text-gray-600 hover:underline">
+    Cancel
+  </a>
+</div>
+{% endblock %}

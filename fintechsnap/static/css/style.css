@@ -1,0 +1,179 @@
+/* Global Background + Typography */
+body {
+    background-color: transparent;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #1E293B;
+}
+
+/* Navigation Bar */
+header {
+    background-color: #ffffff;   /* clean white */
+    padding: 14px 40px;
+    border-bottom: 1px solid #f1e6d6; /* soft warm divider */
+}
+.page-bg {
+    background: transparent !important;
+}
+main {
+    background: transparent !important;
+}
+
+
+.logo {
+    height: 40px;
+}
+
+.nav-center {
+    font-size: 26px;
+    font-weight: 700;
+    color: #F8FAFC;
+}
+
+.nav-right a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: #E2E8F0;
+    font-size: 18px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.nav-right a:hover {
+    color: #f4c073;
+}
+
+/* Page Container */
+.container {
+    margin-top: 80px;
+}
+
+/* Headings */
+h1 {
+    color: #ffffff;
+    font-size: 36px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Paragraph Text */
+p {
+    font-size: 18px;
+    opacity: 0.85;
+}
+
+/* Buttons */
+button {
+    background-color: #3B82F6;
+    color: white;
+    border: none;
+    padding: 12px 26px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 35px;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background-color: #1D4ED8;
+}
+:root {
+    --fm-primary: #0ea5e9;          /* teal */
+    --fm-primary-dark: #0369a1;     /* deep teal-blue */
+    --fm-accent: #3b82f6;           /* bright blue */
+    --fm-bg: #F4FBFF;               /* main dashboard background */
+    --fm-sidebar-bg: #022C3A;       /* sidebar background */
+    --fm-sidebar-hover: #0b3b52;    /* hover state */
+}
+
+/* Main dashboard background wrapper */
+.fm-shell {
+    background-color: var(--fm-bg);
+}
+
+.fm-card {
+    background: rgba(255, 255, 255, 0.96); /* near-solid */
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: 0.2s ease;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+.fm-card {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+
+.fm-card:hover {
+    border-color: var(--fm-primary);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+/* Score card accent strip */
+.fm-score {
+    border-left: 5px solid var(--fm-primary);
+}
+
+.fm-sidebar {
+    background: rgba(4, 30, 74, 0.85);
+    backdrop-filter: blur(6px);
+}
+
+
+/* Sidebar links */
+.fm-sidebar-link {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #e5f6ff;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: 0.15s ease;
+}
+
+.fm-sidebar-link:hover {
+    background-color: var(--fm-sidebar-hover);
+    color: #ffffff;
+}
+
+.fm-sidebar-link--active {
+    background-color: #ffffff;
+    color: var(--fm-primary-dark) !important;
+    font-weight: 600;
+    box-shadow: 0 0 0 1px #e0f2fe;
+}
+
+/* Logout style */
+.fm-sidebar-logout {
+    color: #fca5a5 !important;
+}
+
+.fm-sidebar-logout:hover {
+    background-color: rgba(248, 113, 113, 0.16);
+    color: #fecaca !important;
+}
+.dashboard-bg {
+    background-image: url("/static/images/dashboard_bg.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    position: relative;
+}
+
+.dashboard-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.55); /* not too strong */
+    z-index: 0;
+}
+
+
+.dashboard-bg > * {
+    position: relative;
+    z-index: 1;
+}

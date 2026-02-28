@@ -1,0 +1,201 @@
+  {% extends "base.html" %}
+  {% load static %}
+
+  {% block title %}About — FinMentor{% endblock %}
+
+  {% block content %}
+  <section class="bg-[#fff7ed] pt-20 pb-10">
+    <div class="w-full px-12">
+
+
+      <!-- Intro + How it works (REFERENCE STYLE) -->
+      <div class="mb-12">
+        <!-- Centered description -->
+        <p class="text-center text-gray-800 max-w-4xl mx-auto mb-14 leading-relaxed">
+          <strong>FinMentor</strong> is a lightweight personal finance mentor that gives you a quick financial health score,
+          simple tips and a 30-day action plan all without bank logins or complicated tracking.
+        </p>
+
+        <!-- Cards + Illustration -->
+        <div class="grid md:grid-cols-3 gap-12 items-start max-w-7xl mx-auto">
+
+
+          <!-- Left: Steps -->
+          <div class="md:col-span-2">
+
+            <!-- Top two cards -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+
+              <div class="bg-gray-300 p-6 text-center">
+                <h3 class="font-bold mb-3">1. Enter a few numbers</h3>
+                <p class="text-sm text-gray-800">
+                  Monthly income, expenses, and savings — it takes less than a minute.
+                </p>
+              </div>
+
+              <div class="bg-gray-300 p-6 text-center">
+                <h3 class="font-bold mb-3">2. Get an instant score</h3>
+                <p class="text-sm text-gray-800">
+                  A simple rule-based score and a savings rate estimate to show where you stand.
+                </p>
+              </div>
+
+            </div>
+
+            <!-- Bottom centered card -->
+            <div class="flex justify-center">
+              <div class="bg-gray-300 p-6 text-center max-w-sm">
+                <h3 class="font-bold mb-3">3. Actionable steps</h3>
+                <p class="text-sm text-gray-800">
+                  Clear tips and a short 30-day plan you can follow to improve your score.
+                  A savings rate estimate shows where you stand.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Illustration -->
+          <div class="flex justify-center md:justify-end -mt-10 md:-mt-24">
+            <img src="{% static 'images/about_img.jpeg' %}"
+                alt="Finance Illustration"
+                class="w-full max-w-sm">
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+          
+    </section>
+
+
+      <!-- Core Features -->
+      <section class="mb-28 relative overflow-hidden bg-white py-20">
+
+
+        <!-- Decorative side images -->
+        <img src="{% static 'images/side 1.jpeg' %}"
+              alt=""
+              class="absolute z-0 left-0 top-0
+                      w-72 md:w-80
+                      -translate-x-32 -translate-y-32
+                      hidden md:block
+                      pointer-events-none select-none opacity-85">
+
+
+
+        <img src="{% static 'images/side 2.jpeg' %}"
+          alt=""
+          class="absolute z-0 right-0 bottom-0
+                  w-56 md:w-56
+                  translate-x-24 translate-y-16
+                  hidden md:block
+                  pointer-events-none select-none opacity-90">
+
+
+        <!-- Heading -->
+        <h2 class="text-center text-2xl font-bold mb-16 tracking-wide">
+          CORE FEATURES
+        </h2>
+
+        <!-- Feature Cards -->
+        <div class="grid md:grid-cols-2 gap-x-32 gap-y-20 max-w-6xl mx-auto mb-28">
+
+
+          <div class="bg-orange-200 px-14 py-10 text-center">
+            <h4 class="font-bold mb-3">Privacy first</h4>
+            <p class="text-sm text-gray-800">
+              We never ask for bank credentials. All calculations happen locally or in session.
+            </p>
+          </div>
+
+          <div class="bg-orange-200 px-8 py-6 text-center">
+            <h4 class="font-bold mb-3">Fast & simple</h4>
+            <p class="text-sm text-gray-800">
+              Designed for quick classroom demos and real users who want instant clarity.
+            </p>
+          </div>
+
+          <div class="bg-orange-200 px-8 py-6 text-center">
+            <h4 class="font-bold mb-3">Actionable tips</h4>
+            <p class="text-sm text-gray-800">
+              Practical suggestions you can apply immediately.
+            </p>
+          </div>
+
+          <div class="bg-orange-200 px-8 py-6 text-center">
+            <h4 class="font-bold mb-3">Dashboard</h4>
+            <p class="text-sm text-gray-800">
+              See your score, savings rate and saved tips on a simple dashboard.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Privacy & Data Box -->
+        <div class="max-w-6xl mx-auto border border-gray-400 rounded-3xl px-14 py-10 text-center bg-[#fff7ed]">
+          <h3 class="font-bold mb-3">Privacy & data</h3>
+          <p class="text-sm text-gray-800 leading-relaxed">
+            FinMentor is a demo app for your final year project. We do not store personal financial
+            data long-term. On this demo, inputs are saved in session for the dashboard and not shared.
+            If you later add persistence, show a clear opt-in and a privacy policy.
+          </p>
+        </div>
+
+      </section>
+
+
+
+      <!-- FAQ -->
+      <section class="mb-20">
+        <div class="w-full px-16">
+
+          <div class="flex flex-col md:flex-row items-center gap-10">
+
+            <!-- Left Image -->
+            <div class="flex-shrink-0">
+              <img src="{% static 'images/faq.jpeg' %}"
+                  alt="FAQ Illustration"
+                  class="w-72">
+            </div>
+
+            <!-- FAQ Box (FULL WIDTH) -->
+            <div class="flex-1 bg-orange-200 rounded-2xl p-12">
+              <h3 class="text-xl font-bold text-center mb-8 underline">FAQ</h3>
+
+              <div class="space-y-6 text-base text-gray-800">
+                <p>
+                  <strong>Do I need to connect my bank?</strong><br>
+                  No — this is intentionally simple and private. No bank logins required.
+                </p>
+
+                <p>
+                  <strong>Is the score accurate?</strong><br>
+                  It is a rule-based estimate designed to guide users.
+                  It can be extended later using refined rules or machine learning.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <!-- <div class="text-center mb-12">
+        <a href="{% url 'input' %}"
+          class="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg shadow hover:bg-orange-700 transition">
+          Try FinMentor
+        </a>
+      </div> -->
+
+      <!-- Footer credit -->
+      <!-- <div class="text-center text-gray-600 text-sm">
+        Created by <strong>Riya Jagtap</strong>
+      </div> -->
+
+    <!-- </div> -->
+  </section>
+  {% endblock %}

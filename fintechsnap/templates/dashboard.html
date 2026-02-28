@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard — FinMentor{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex fm-shell dashboard-bg"
+     data-bg="{% static 'images/dashboard.jpeg' %}">
+
+    <!-- Sidebar -->
+    <aside class="w-60 fm-sidebar px-5 py-6">
+        <div class="text-xl font-semibold mb-8 text-white">FinMentor</div>
+
+        <nav class="space-y-2 text-sm">
+            <a href="{% url 'dashboard' %}" class="fm-sidebar-link fm-sidebar-link--active">Dashboard</a>
+            <a href="{% url 'spending' %}" class="fm-sidebar-link">Spending Insights</a>
+            <a href="{% url 'savings' %}" class="fm-sidebar-link">Savings &amp; Goals</a>
+            <a href="{% url 'loans_emi' %}" class="fm-sidebar-link">Loans &amp; EMI</a>
+            <!--<a href="{% url 'action_plan' %}" class="fm-sidebar-link">Action Plan &amp; What-If</a>-->
+        </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 px-10 py-8">
+
+        <!-- Header -->
+        <header class="mb-8 flex items-center justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-wide text-black">Dashboard</p>
+                <h1 class="text-2xl text-black font-semibold">
+                    Welcome, {{ user_name }}!
+                </h1>
+            </div>
+
+            <a href="{% url 'input' %}"
+            class="px-5 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">
+                Update Financial Details
+            </a>
+        </header>
+
+        <!-- MODEL COMPARISON SECTION 
+        <section class="mb-8">
+            <div class="fm-card p-5">
+                <p class="text-xs text-gray-500 mb-4">Model Predictions Comparison</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">SVM Prediction</p>
+                        <p class="text-lg font-semibold text-indigo-600">
+                            {{ svm_output }}
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">CRF Prediction</p>
+                        <p class="text-lg font-semibold text-indigo-600">
+                            {{ crf_output }}
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500">HMM Prediction</p>
+                        <p class="text-lg font-semibold text-indigo-600">
+                            {{ hmm_output }}
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                    <p class="text-sm text-gray-500">Final Ensemble Decision</p>
+                    <p class="text-xl font-bold text-indigo-700">
+                        {{ final_output }}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">
+                        {{ selection_reason }}
+                        </p>
+                </div>
+            </div>
+        </section> -->
+
+        <!-- CORE INSIGHTS -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+
+            <!-- Financial Health Score -->
+            <div class="fm-card p-4 fm-score">
+                <p class="text-xs text-gray-500">Financial Health Score</p>
+                <p class="mt-2 text-3xl font-bold text-indigo-600">
+                    {{ score }}/100
+                </p>
+            </div>
+
+            <!-- Risk Level -->
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">Financial Risk Level</p>
+                 <p class="mt-3 text-xl font-bold text-black-600">
+                <span>{{ risk }}</span>
+                </p>
+                <p class="text-xs text-gray-500 mt-1">
+                    Based on predicted score
+                </p>
+            </div>
+
+            <!-- Financial Persona -->
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">Financial Persona</p>
+                 <p class="mt-3 text-xl font-bold text-indigo-600">
+                    {{ persona }}
+                </p>
+            </div>
+
+        </section>
+
+        <!-- BEHAVIOUR SUMMARY -->
+        <section class="mb-8">
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">Financial Behaviour Summary</p>
+                <p class="mt-3 text-xl font-bold text-indigo-600">
+                    {{ spending_behaviour|default:"Not Available" }}
+                </p>
+
+                <p class="text-lg mt-3 text-gray-800">
+                    Savings:
+                    <span class="font-semibold text-indigo-700">
+                        {{ savings_behaviour|default:"Not Available" }}
+                    </span>
+                </p>
+
+                <p class="text-lg mt-2 text-gray-800">
+                    EMI Status:
+                    <span class="font-semibold text-indigo-700">
+                        {{ emi_status|default:"Not Available" }}
+                    </span>
+                </p>
+
+            </div>
+        </section>
+
+        <!-- FINANCIAL RATIOS -->
+        <section class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-10">
+
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">Expense-to-Income Ratio</p>
+                <p class="mt-2 text-lg font-semibold text-red-600">
+                    {{ expense_ratio|floatformat:1 }}%
+                </p>
+            </div>
+
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">EMI-to-Income Ratio</p>
+                <p class="mt-2 text-lg font-semibold text-orange-600">
+                    {{ emi_ratio|floatformat:1 }}%
+                </p>
+            </div>
+
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">Disposable Income</p>
+                <p class="mt-2 text-lg font-semibold text-green-600">
+                    ₹{{ disposable_income|floatformat:0 }}
+                </p>
+            </div>
+
+            <div class="fm-card p-4">
+                <p class="text-xs text-gray-500">Savings Rate</p>
+                <p class="mt-2 text-lg font-semibold text-emerald-600">
+                    {{ savings_rate|floatformat:1 }}%
+                </p>
+            </div>
+
+        </section>
+
+        
+
+        <!-- QUICK ACTIONS 
+        <section>
+            <h2 class="text-lg font-semibold mb-3 text-indigo-600">Quick Actions</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+                <a href="{% url 'input' %}" class="fm-card p-4 block hover:shadow-md">
+                    <h3 class="font-medium text-indigo-600 mb-1">
+                        Update Financial Profile
+                    </h3>
+                    <p class="text-xs text-gray-600">
+                        Edit income, expenses, EMIs and savings.
+                    </p>
+                </a>
+
+                <a href="{% url 'spending' %}" class="fm-card p-4 block">
+                    <h3 class="font-medium text-indigo-600 mb-1">Spending Insights</h3>
+                    <p class="text-xs text-gray-600">
+                        Category-wise expense analysis.
+                    </p>
+                </a>
+
+                <a href="{% url 'savings' %}" class="fm-card p-4 block">
+                    <h3 class="font-medium text-indigo-600 mb-1">Savings &amp; Goals</h3>
+                    <p class="text-xs text-gray-600">
+                        Emergency fund & readiness check.
+                    </p>
+                </a>
+
+                <a href="{% url 'action_plan' %}" class="fm-card p-4 block">
+                    <h3 class="font-medium text-indigo-600 mb-1">Action Plan</h3>
+                    <p class="text-xs text-gray-600">
+                        Personalized improvement steps.
+                    </p>
+                </a>
+
+            </div>
+        </section> -->
+
+    </main>
+</div>
+{% endblock %}

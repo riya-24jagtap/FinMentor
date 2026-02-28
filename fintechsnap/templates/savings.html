@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Savings Analysis — FinMentor{% endblock %}
+
+{% block content %}
+<!-- <div class="min-h-screen flex fm-shell dashboard-bg"
+     data-bg="{% static 'images/dashboard.jpeg' %}"> -->
+<div class="min-h-screen flex fm-shell bg-[#FAF7F5]">
+
+  <!-- Sidebar -->
+  <aside class="w-60 fm-sidebar px-5 py-6">
+    <div class="text-xl font-semibold mb-8 text-white">FinMentor</div>
+    <nav class="space-y-2 text-sm">
+      <a href="{% url 'dashboard' %}" class="fm-sidebar-link">Dashboard</a>
+      <a href="{% url 'spending' %}" class="fm-sidebar-link">Spending Insights</a>
+      <a href="{% url 'savings' %}" class="fm-sidebar-link fm-sidebar-link--active">
+        Savings Analysis
+      </a>
+      <a href="{% url 'loans_emi' %}" class="fm-sidebar-link">Loans & EMI</a>
+      <!--<a href="{% url 'action_plan' %}" class="fm-sidebar-link">Action Plan &amp; What-If</a>-->
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 px-10 py-8">
+
+    <!-- HEADER -->
+    <header class="mb-6">
+      <p class="text-xs uppercase tracking-wide text-black/80">
+            Savings Analysis
+          </p>
+      <h1 class="text-2xl font-semibold text-black">
+        Savings Strength Assessment
+      </h1>
+      <p class="text-sm text-black/70 mt-1">
+        Derived from income, expenses and savings patterns.
+      </p>
+    </header>
+
+    <!-- ML FEATURES -->
+    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">Monthly Savings</p>
+        <p class="text-2xl font-semibold text-emerald-700">
+          ₹{{ monthly_savings|floatformat:0 }}
+        </p>
+      </div>
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">Savings Rate</p>
+        <p class="text-2xl font-semibold">
+          {{ savings_rate }}%
+        </p>
+      </div>
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">Emergency Potential Coverage”</p>
+        <p class="text-2xl font-semibold">
+          {{ coverage_months }} months
+        </p>
+      </div>
+
+      <div class="fm-card p-4">
+        <p class="text-xs text-gray-500">Savings Health</p>
+        <p class="text-lg font-semibold text-indigo-600">
+          {{ savings_health_label }}
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- NON-ML SECTION -->
+    <section>
+      <h2 class="text-lg font-semibold mb-4">
+        Savings Goals 
+      </h2>
+
+      <p class="text-sm text-gray-500 mb-3">
+        These goals help you plan better but are not used in model prediction.
+      </p>
+
+      <a href="{% url 'add_goal' %}"
+         class="inline-block mb-4 px-4 py-2 text-sm font-semibold
+                text-white bg-indigo-600 rounded hover:bg-indigo-700">
+        ➕ Add Savings Goal
+      </a>
+
+      {% if goals %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for goal in goals %}
+        <div class="fm-card p-4">
+          <p class="font-semibold">{{ goal.name }}</p>
+          <p class="text-xs text-gray-500">
+            Target: ₹{{ goal.target_amount|floatformat:0 }}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-gray-500">
+        No goals added yet.
+      </p>
+      {% endif %}
+    </section>
+
+  </main>
+</div>
+{% endblock %}

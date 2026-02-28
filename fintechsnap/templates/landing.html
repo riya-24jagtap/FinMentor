@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FinMentor — Your Personal Finance Mentor{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="bg-[#fff4e6] py-20">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+    <!-- LEFT -->
+    <div>
+
+      {% if user.is_authenticated %}
+        <h1 class="text-4xl lg:text-5xl font-extrabold text-slate-900">
+          Welcome, {{ request.user.first_name|default:request.user.username }} 👋
+        </h1>
+
+        <p class="mt-5 text-slate-700 text-lg">
+          Continue tracking your financial health, explore insights,
+          and improve your money habits with confidence.
+        </p>
+
+        <div class="mt-8 flex gap-4">
+          <a href="{% url 'input' %}"
+             class="bg-orange-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-orange-700">
+            {% if has_data %}Update Details{% else %}Get Started{% endif %}
+          </a>
+
+          <a href="{% url 'dashboard' %}"
+             class="border border-orange-500 text-orange-600 px-6 py-3 rounded-md font-semibold hover:bg-orange-50">
+            Go to Dashboard
+          </a>
+        </div>
+
+      {% else %}
+        <h1 class="text-4xl lg:text-6xl font-extrabold text-slate-900">
+          FinMentor
+        </h1>
+
+        <p class="mt-5 text-slate-700 text-lg max-w-xl">
+          FinMentor helps you understand your financial health instantly by analysing
+          income, expenses, savings, and habits — with no bank login required.
+        </p>
+
+        <div class="mt-6 inline-block relative">
+          <h2 class="mt-8 text-xl md:text-2xl font-bold text-black leading-tight">
+            Helping you make money moves
+            <span class="relative inline-block whitespace-nowrap pb-4 ml-1">
+              with confidence
+            </span>
+          </h2>
+
+        </div>
+
+
+        <div class="mt-8 flex gap-4">
+          <a href="{% url 'login' %}"
+             class="bg-orange-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-orange-700">
+            Get Started
+          </a>
+
+          <a href="{% url 'about' %}"
+             class="border border-orange-500 text-orange-600 px-6 py-3 rounded-md font-semibold hover:bg-orange-50">
+            Learn more
+          </a>
+        </div>
+      {% endif %}
+
+    </div>
+
+    <!-- RIGHT IMAGE -->
+    <div class="flex justify-center">
+      <img src="{% static 'images/Frame.jpg' %}"
+           alt="Finance Illustration"
+           class="w-full max-w-2xl">
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="bg-white py-20">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+
+    <div>
+      <img 
+        src="{% static 'images/benefits.1.png' %}"
+        class="mx-auto w-14 mb-8 scale-[3.5]"
+        style="transform-origin: center;"
+      >
+
+      <h3 class="font-semibold text-lg">Saving more money easily</h3>
+      <p class="mt-2 text-sm text-gray-600">
+        Smart tracking and insights to help you save better.
+      </p>
+      <div class="mx-auto w-[260px] sm:w-[300px] md:w-[340px] lg:w-[380px] mb-10"></div>
+    </div>
+
+    <div>
+      <img 
+        src="{% static 'images/benefits.2.png' %}"
+        class="mx-auto w-14 mb-8 scale-[3.5]"
+        style="transform-origin: center;"
+      >
+
+      <h3 class="font-semibold text-lg">Get your dream target</h3>
+      <p class="mt-2 text-sm text-gray-600">
+        Set goals and get guidance to reach them faster.
+      </p>
+      <div class="h-1 w-12 bg-orange-500 mx-auto mt-4"></div>
+    </div>
+
+    <div>
+      <img 
+        src="{% static 'images/benefits.3.png' %}"
+        class="mx-auto w-14 mb-8 scale-[3.5]"
+        style="transform-origin: center;"
+      >
+
+      <h3 class="font-semibold text-lg">Effective & efficient</h3>
+      <p class="mt-2 text-sm text-gray-600">
+        Simple dashboards that convert numbers into clarity.
+      </p>
+      <div class="h-1 w-12 bg-orange-500 mx-auto mt-4"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DEDICATION -->
+<section class="bg-[#fff4e6] py-20 text-center">
+  <div class="max-w-3xl mx-auto px-6">
+
+    <img src="{% static 'images/yourphoto.jpg' %}"
+         class="w-28 h-28 rounded-full mx-auto mb-6 object-cover">
+
+    <p class="italic text-slate-700 text-lg">
+      FinMentor was created with passion, curiosity, and a deep desire to make
+      personal finance simple, accessible, and empowering.
+    </p>
+
+    <p class="mt-4 font-semibold text-slate-800">
+      — Riya Jagtap
+    </p>
+
+    <p class="mt-4 text-sm text-slate-600">
+      Dedicated to everyone trying to build a better tomorrow —
+      one smart step at a time.
+    </p>
+  </div>
+</section>
+
+{% endblock %}

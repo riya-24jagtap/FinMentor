@@ -1,0 +1,2 @@
+SHOW DATABASES;
+CREATE DATABASE finmentor_db;
