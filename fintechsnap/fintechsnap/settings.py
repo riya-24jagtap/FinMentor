@@ -25,9 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'fintechsnap.analysis',
-    'fintechsnap.predictor',
-    'fintechsnap.financeapp.apps.FinanceappConfig',
+    'analysis.apps.AnalysisConfig',
+    'predictor',
+    'financeapp.apps.FinanceappConfig',
 ]
 
 MIDDLEWARE = [
