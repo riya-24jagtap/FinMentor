@@ -15,7 +15,7 @@ import os
 import joblib
 from dataclasses import dataclass
 
-ENSEMBLE_PATH = os.path.join(settings.BASE_DIR, "fintechsnap", "ml_models")
+ENSEMBLE_PATH = os.path.join(settings.BASE_DIR, "ml_models")
 
 svm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "svm_model.pkl"))
 hmm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "hmm_model.pkl"))
