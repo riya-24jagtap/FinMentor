@@ -41,6 +41,11 @@
 
       <form method="post">
         {% csrf_token %}
+        {% if form.errors %}
+          <div class="mb-4 text-red-600 text-sm">
+            Invalid username or password.
+          </div>
+        {% endif %}
 
         <!-- Username -->
         <label class="block text-sm text-gray-700 mb-2"></label>
