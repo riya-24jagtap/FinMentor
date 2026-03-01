@@ -5,4 +5,5 @@ staticfiles/
 .vscode/
 *.bak
 venv/
+venv311/
 notebooks/
