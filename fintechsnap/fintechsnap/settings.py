@@ -138,11 +138,3 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'landing'       # after login => /
 LOGOUT_REDIRECT_URL = 'landing'      # after logout => /
 
-
-import os
-
-if os.environ.get("CREATE_SUPERUSER") == "True":
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    if not User.objects.filter(username="admin2").exists():
-        User.objects.create_superuser("admin2", "admin2@example.com", "Admin1234")
