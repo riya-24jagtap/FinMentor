@@ -15,12 +15,6 @@ import os
 import joblib
 from dataclasses import dataclass
 
-ENSEMBLE_PATH = os.path.join(settings.BASE_DIR, "ml_models")
-
-svm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "svm_model.pkl"))
-hmm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "hmm_model.pkl"))
-crf_model = joblib.load(os.path.join(ENSEMBLE_PATH, "crf_model.pkl"))
-scaler = joblib.load(os.path.join(ENSEMBLE_PATH, "scaler.pkl"))
 
 PERSONA_MAP = {
     0: "Financially Moderate",
@@ -424,7 +418,12 @@ def compute_health(request):
         net_balance,
         savings_rate
     ]]
+    ENSEMBLE_PATH = os.path.join(settings.BASE_DIR, "ml_models")
 
+    svm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "svm_model.pkl"))
+    hmm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "hmm_model.pkl"))
+    crf_model = joblib.load(os.path.join(ENSEMBLE_PATH, "crf_model.pkl"))
+    scaler = joblib.load(os.path.join(ENSEMBLE_PATH, "scaler.pkl"))
     # Scale input
     X_scaled = scaler.transform(X_raw)
 
