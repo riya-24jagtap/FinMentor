@@ -418,7 +418,12 @@ def compute_health(request):
         net_balance,
         savings_rate
     ]]
-    ENSEMBLE_PATH = os.path.join(settings.BASE_DIR, "ml_models")
+    
+
+
+    from pathlib import Path
+
+    ENSEMBLE_PATH = Path(__file__).resolve().parent.parent / "ml_models"
 
     svm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "svm_model.pkl"))
     hmm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "hmm_model.pkl"))
