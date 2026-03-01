@@ -13,7 +13,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-m8_k#e9@ioe^k0vd3pq89)8)o!&imagc25g)b%uu20l+=#d!j('
 
-DEBUG = False
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 
 ALLOWED_HOSTS = ['*']
