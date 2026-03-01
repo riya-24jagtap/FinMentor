@@ -423,12 +423,12 @@ def compute_health(request):
 
     from pathlib import Path
 
-    ENSEMBLE_PATH = Path(__file__).resolve().parent.parent / "ml_models"
+    MODEL_DIR = Path(__file__).resolve().parent.parent / "ml_models"
 
-    svm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "svm_model.pkl"))
-    hmm_model = joblib.load(os.path.join(ENSEMBLE_PATH, "hmm_model.pkl"))
-    crf_model = joblib.load(os.path.join(ENSEMBLE_PATH, "crf_model.pkl"))
-    scaler = joblib.load(os.path.join(ENSEMBLE_PATH, "scaler.pkl"))
+    svm_model = joblib.load(MODEL_DIR / "svm_model.pkl")
+    hmm_model = joblib.load(MODEL_DIR / "hmm_model.pkl")
+    crf_model = joblib.load(MODEL_DIR / "crf_model.pkl")
+    scaler = joblib.load(MODEL_DIR / "scaler.pkl")
     # Scale input
     X_scaled = scaler.transform(X_raw)
 
