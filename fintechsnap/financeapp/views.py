@@ -501,7 +501,37 @@ def compute_health(request):
     score = max(0, min(100, round(score, 1)))
 
     # ---------------- SAVE TO DATABASE ----------------
-    record, _ = FinanceRecord.objects.get_or_create(user=request.user)
+    record = FinanceRecord.objects.filter(user=request.user).first()
+
+    if record:
+        # update existing record
+        record.income = income
+        record.expenses = expenses
+        record.fixed_obligations = fixed
+        record.net_balance = net_balance
+        record.savings_rate = savings_rate * 100
+        record.score = score
+        record.persona = persona
+        record.savings_behaviour = savings_label
+        record.spending_behaviour = spending_label
+        record.emi_status = emi_label
+    else:
+        # create new record
+        record = FinanceRecord.objects.create(
+            user=request.user,
+            income=income,
+            expenses=expenses,
+            fixed_obligations=fixed,
+            net_balance=net_balance,
+            savings_rate=savings_rate * 100,
+            score=score,
+            persona=persona,
+            savings_behaviour=savings_label,
+            spending_behaviour=spending_label,
+            emi_status=emi_label,
+        )
+
+    record.save()
 
     record.income = income
     record.expenses = expenses
