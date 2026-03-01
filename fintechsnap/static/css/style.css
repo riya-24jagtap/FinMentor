@@ -156,7 +156,7 @@ button:hover {
     color: #fecaca !important;
 }
 .dashboard-bg {
-    background-image: url("/static/images/dashboard_bg.jpeg");
+    background-image: url("../images/dashboard_bg.jpeg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
