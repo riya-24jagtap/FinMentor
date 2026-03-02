@@ -609,7 +609,6 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
 
     return render(request, "registration/login.html")
-
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 
