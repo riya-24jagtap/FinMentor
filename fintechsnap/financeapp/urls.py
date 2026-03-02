@@ -23,15 +23,7 @@ urlpatterns = [
     path('savings/goals/<int:goal_id>/delete/', views.delete_goal, name='delete_goal'),
 
     # Auth
-    path(
-        'accounts/login/',
-        auth_views.LoginView.as_view(
-            template_name='registration/login.html',
-            authentication_form=AuthenticationForm,
-            redirect_authenticated_user=True
-        ),
-        name='login'
-    ),
+    path('accounts/login/', views.login_view, name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', views.register, name='register'),
 ]
