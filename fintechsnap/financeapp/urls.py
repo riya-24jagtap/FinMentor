@@ -34,5 +34,4 @@ urlpatterns = [
     ),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', views.register, name='register'),
-    path('create-user/', views.force_create_user),
 ]
