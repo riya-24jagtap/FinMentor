@@ -28,7 +28,14 @@ urlpatterns = [
     path('savings/goals/<int:goal_id>/delete/', views.delete_goal, name='delete_goal'),
 
     # Auth
-    path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path(
+    'accounts/login/',
+        auth_views.LoginView.as_view(
+            template_name='registration/login.html',
+            redirect_authenticated_user=True
+        ),
+        name='login'
+    ),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', views.register, name='register'),
     path('create-user/', views.force_create_user),
