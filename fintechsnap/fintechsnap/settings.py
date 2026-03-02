@@ -10,11 +10,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-m8_k#e9@ioe^k0vd3pq89)8)o!&imagc25g)b%uu20l+=#d!j('
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 # Application definition
