@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.forms import AuthenticationForm
 from . import views
 
 urlpatterns = [
@@ -13,13 +14,7 @@ urlpatterns = [
     path('spending/', views.spending_insights, name='spending'),
     path('loans-emi/', views.loans_emi, name='loans_emi'),
     path('action-plan/', views.action_plan, name='action_plan'),
-
-    # 🔥 THIS WAS MISSING
-    path(
-        'action-plan/predict/',
-        views.action_plan_predict,
-        name='action_plan_predict'
-    ),
+    path('action-plan/predict/', views.action_plan_predict, name='action_plan_predict'),
 
     path('expenses/edit/', views.edit_expenses, name='edit_expenses'),
     path('savings/', views.savings_goals, name='savings'),
@@ -29,9 +24,10 @@ urlpatterns = [
 
     # Auth
     path(
-    'accounts/login/',
+        'accounts/login/',
         auth_views.LoginView.as_view(
             template_name='registration/login.html',
+            authentication_form=AuthenticationForm,
             redirect_authenticated_user=True
         ),
         name='login'
@@ -39,6 +35,4 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', views.register, name='register'),
     path('create-user/', views.force_create_user),
-    
-    
 ]
