@@ -498,7 +498,13 @@ def compute_health(request):
         "savings_rate": savings_rate
     }]]
 
-    crf_pred = int(crf_model.predict(X_crf)[0][0])
+    try:
+        crf_raw = crf_model.predict(X_crf)[0][0]
+        crf_pred = int(crf_raw)
+    except Exception as e:
+        logger.exception("CRF prediction failed")
+        messages.error(request, f"CRF prediction failed: {e}")
+        return redirect("input")
 
     # ---------------- HYBRID ENSEMBLE VOTING ----------------
     from collections import Counter
@@ -579,17 +585,6 @@ def compute_health(request):
 
     record.save()
 
-    record.income = income
-    record.expenses = expenses
-    record.fixed_obligations = fixed
-    record.net_balance = net_balance
-    record.savings_rate = savings_rate * 100  # store as percentage
-    record.score = score
-    record.persona = persona
-    record.savings_behaviour = savings_label
-    record.spending_behaviour = spending_label
-    record.emi_status = emi_label
-    record.save()
     print("SVM:", svm_pred)
     print("HMM:", hmm_pred)
     print("CRF:", crf_pred)
