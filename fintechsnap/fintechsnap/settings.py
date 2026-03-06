@@ -4,17 +4,19 @@ from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-  # temporary, change later
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SECRET_KEY = 'django-insecure-m8_k#e9@ioe^k0vd3pq89)8)o!&imagc25g)b%uu20l+=#d!j('
 
-DEBUG = True
+DEBUG = os.environ.get("RENDER") is None
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "finmentor-gnx0.onrender.com",
+    "localhost",
+    "127.0.0.1"
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -73,12 +75,14 @@ import dj_database_url
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    # Render / production database
     DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
     }
 else:
-    # Local development database
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
