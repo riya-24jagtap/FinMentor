@@ -461,18 +461,28 @@ def compute_health(request):
 
     MODEL_DIR = Path(__file__).resolve().parent.parent / "ml_models"
 
-    svm_model = joblib.load(MODEL_DIR / "svm_model.pkl")
-    hmm_model = joblib.load(MODEL_DIR / "hmm_model.pkl")
-    crf_model = joblib.load(MODEL_DIR / "crf_model.pkl")
-    scaler = joblib.load(MODEL_DIR / "scaler.pkl")
+    import logging
+    logger = logging.getLogger(__name__)
+
+    try:
+        svm_model = joblib.load(MODEL_DIR / "svm_model.pkl")
+        hmm_model = joblib.load(MODEL_DIR / "hmm_model.pkl")
+        crf_model = joblib.load(MODEL_DIR / "crf_model.pkl")
+        scaler = joblib.load(MODEL_DIR / "scaler.pkl")
+    except Exception as e:
+        logger.exception("Model loading failed")
+        messages.error(request, f"Model loading failed: {e}")
+        return redirect("input")
     # Scale input
-    X_scaled = scaler.transform(X_raw)
+    try:
+        X_scaled = scaler.transform(X_raw)
 
-    # SVM prediction
-    svm_pred = int(svm_model.predict(X_scaled)[0])
-
-    # HMM prediction
-    hmm_pred = int(hmm_model.predict(X_scaled)[0])
+        svm_pred = int(svm_model.predict(X_scaled)[0])
+        hmm_pred = int(hmm_model.predict(X_scaled)[0])
+    except Exception as e:
+        logger.exception("Prediction failed")
+        messages.error(request, f"Prediction failed: {e}")
+        return redirect("input")
 
     # CRF prediction
     X_crf = [[{
