@@ -153,7 +153,7 @@ def action_plan(request):
         health_label = "Low Risk"
 
     # -------- DYNAMIC ACTION PLAN --------
-    action_points = action_points[:3]
+    action_points = []
 
     if savings_rate < 20:
         action_points.append("Increase savings rate to at least 20% of income.")
