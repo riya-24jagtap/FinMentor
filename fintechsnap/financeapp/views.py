@@ -153,7 +153,7 @@ def action_plan(request):
         health_label = "Low Risk"
 
     # -------- DYNAMIC ACTION PLAN --------
-    action_points = []
+    action_points = action_points[:3]
 
     if savings_rate < 20:
         action_points.append("Increase savings rate to at least 20% of income.")
@@ -164,9 +164,15 @@ def action_plan(request):
     if expense_ratio > 60:
         action_points.append("Optimize discretionary spending to reduce expense ratio.")
 
-    if savings_rate >= 40 and emi_ratio < 20:
-        action_points.append("Consider long-term investments for wealth growth.")
+    if savings_rate >= 30:
+        action_points.append(
+            "Maintain your strong savings discipline and consider building a 6-month emergency fund."
+        )
 
+    if not action_points:
+        action_points.append(
+            "Your financial profile appears balanced. Continue maintaining your current savings and spending habits."
+        )
     context = {
         "score": score,
         "health_label": health_label,
@@ -232,18 +238,55 @@ def action_plan_predict(request):
 
 @login_required
 def edit_expenses(request):
-    return render(request, "edit_expenses.html")
+    record = FinanceRecord.objects.filter(user=request.user).order_by("-created_at").first()
+
+    if request.method == "POST":
+        record.expenses = request.POST.get("expenses")
+        record.save()
+        return redirect("dashboard")
+
+    return render(request, "edit_expenses.html", {"record": record})
 
 @login_required
 def add_goal(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        target_amount = request.POST.get("target_amount")
+        allocation_percent = request.POST.get("allocation_percent")
+
+        if not allocation_percent:
+            allocation_percent = 0
+
+        SavingsGoal.objects.create(
+            user=request.user,
+            name=name,
+            target_amount=float(target_amount),
+            allocation_percent=float(allocation_percent),
+        )
+
+        return redirect("savings")
+
     return render(request, "add_goal.html")
 @login_required
 def edit_goal(request, goal_id):
-    return render(request, "edit_goal.html", {"goal_id": goal_id})
+    goal = SavingsGoal.objects.get(id=goal_id, user=request.user)
+
+    if request.method == "POST":
+        goal.name = request.POST.get("name")
+        goal.target_amount = request.POST.get("target_amount")
+        goal.allocation_percent = request.POST.get("allocation_percent") or 0
+        goal.save()
+
+        return redirect("savings")
+
+    return render(request, "edit_goal.html", {"goal": goal})
+
 
 @login_required
 def delete_goal(request, goal_id):
-    # safe stub – actual delete logic can be added later
+    goal = SavingsGoal.objects.get(id=goal_id, user=request.user)
+    goal.delete()
+
     return redirect("savings")
 
 
