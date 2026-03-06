@@ -238,14 +238,7 @@ def action_plan_predict(request):
 
 @login_required
 def edit_expenses(request):
-    record = FinanceRecord.objects.filter(user=request.user).order_by("-created_at").first()
-
-    if request.method == "POST":
-        record.expenses = request.POST.get("expenses")
-        record.save()
-        return redirect("dashboard")
-
-    return render(request, "edit_expenses.html", {"record": record})
+    return render(request, "edit_expenses.html")
 
 @login_required
 def add_goal(request):
