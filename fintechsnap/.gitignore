@@ -1,9 +1,26 @@
+# Python
 __pycache__/
 *.pyc
-db.sqlite3
-staticfiles/
-.vscode/
-*.bak
+
+# Virtual environments
 venv/
 venv311/
+
+# Database
+*.sqlite3
+
+# IDE
+.vscode/
+
+# Static / build
+staticfiles/
+
+# Logs / temp
+*.bak
+
+# Notebooks (optional)
 notebooks/
+
+# OS
+.DS_Store
+Thumbs.db
