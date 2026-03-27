@@ -643,29 +643,29 @@ def register(request):
                 "otp_expires_at": expires_at.isoformat(),
             }
 
-            try:
-                send_mail(
-                    subject="FinMentor Email Verification OTP",
-                    message=(
-                        f"Your FinMentor verification code is {otp}. "
-                        "It expires in 10 minutes."
-                    ),
-                    from_email=getattr(
-                        settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER
-                    ),
-                    recipient_list=[cleaned_data["email"]],
-                    fail_silently=False,
-                )
-            except Exception:
-                request.session.pop(otp_session_key, None)
-                messages.error(
-                    request,
-                    "Unable to send OTP right now. Please try again in a moment.",
-                )
-                return render(request, "registration/register.html", {"form": form})
+        try:
+            send_mail(
+                subject="FinMentor Email Verification OTP",
+                message=(
+                    f"Your FinMentor verification code is {otp}. "
+                    "It expires in 10 minutes."
+                ),
+                from_email=getattr(
+                    settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER
+                ),
+                recipient_list=[cleaned_data["email"]],
+                fail_silently=True,   # ✅ CHANGED
+            )
+        except Exception:
+            request.session.pop(otp_session_key, None)
+            messages.error(
+                request,
+                "Unable to send OTP right now. Please try again in a moment.",
+            )
+            return render(request, "registration/register.html", {"form": form})
 
-            messages.success(request, "We sent a verification code to your email.")
-            return redirect("verify_otp")
+        messages.success(request, "We sent a verification code to your email.")
+        return redirect("verify_otp")    
     else:
          form = RegistrationForm()
     return render(request, "registration/register.html", {"form": form})
