@@ -15,3 +15,12 @@ class RegistrationForm(UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("An account with this email already exists.")
         return email
+
+
+class OTPVerificationForm(forms.Form):
+    otp = forms.RegexField(
+        regex=r"^\d{6}$",
+        max_length=6,
+        min_length=6,
+        error_messages={"invalid": "Enter a valid 6-digit OTP code."},
+    )
