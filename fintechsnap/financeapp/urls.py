@@ -27,7 +27,7 @@ urlpatterns = [
     path('accounts/login/', views.login_view, name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', views.register, name='register'),
-
+    path('accounts/verify-otp/', views.verify_otp, name='verify_otp'),
     path(
         'accounts/password-reset/',
         auth_views.PasswordResetView.as_view(

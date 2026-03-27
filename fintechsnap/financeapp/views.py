@@ -3,17 +3,24 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+from django.core.mail import send_mail
+from django.utils import timezone
 import numpy as np
 from .models import FinanceRecord, ExpenseCategory, SavingsGoal
+from .forms import RegistrationForm
 import pandas as pd
 import json
 import os
 import joblib
+import secrets
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 
 
 PERSONA_MAP = {
@@ -620,21 +627,96 @@ def about(request):
 
 
 def register(request):
+    otp_session_key = "pending_registration"
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Registration successful.")
-            return redirect("login")
+            otp = f"{secrets.randbelow(1_000_000):06d}"
+            expires_at = timezone.now() + timedelta(minutes=10)
+            cleaned_data = form.cleaned_data
+
+            request.session[otp_session_key] = {
+                "username": cleaned_data["username"],
+                "email": cleaned_data["email"],
+                "password": cleaned_data["password1"],
+                "otp": otp,
+                "otp_expires_at": expires_at.isoformat(),
+            }
+
+            try:
+                send_mail(
+                    subject="FinMentor Email Verification OTP",
+                    message=(
+                        f"Your FinMentor verification code is {otp}. "
+                        "It expires in 10 minutes."
+                    ),
+                    from_email=getattr(
+                        settings, "DEFAULT_FROM_EMAIL", settings.EMAIL_HOST_USER
+                    ),
+                    recipient_list=[cleaned_data["email"]],
+                    fail_silently=False,
+                )
+            except Exception:
+                request.session.pop(otp_session_key, None)
+                messages.error(
+                    request,
+                    "Unable to send OTP right now. Please try again in a moment.",
+                )
+                return render(request, "registration/register.html", {"form": form})
+
+            messages.success(request, "We sent a verification code to your email.")
+            return redirect("verify_otp")
     else:
-        form = UserCreationForm()
-
+         form = RegistrationForm()
     return render(request, "registration/register.html", {"form": form})
+def verify_otp(request):
+    otp_session_key = "pending_registration"
+    pending_registration = request.session.get(otp_session_key)
+    if not pending_registration:
+        messages.error(request, "Your verification session has expired. Please register again.")
+        return redirect("register")
 
+    expires_at = datetime.fromisoformat(pending_registration["otp_expires_at"])
+    if timezone.now() > expires_at:
+        request.session.pop(otp_session_key, None)
+        messages.error(request, "OTP has expired. Please register again.")
+        return redirect("register")
 
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from django.contrib import messages
+    if request.method == "POST":
+        entered_otp = request.POST.get("otp", "").strip()
+
+        if entered_otp != pending_registration["otp"]:
+            messages.error(request, "Invalid OTP. Please try again.")
+            return render(
+                request,
+                "registration/verify_otp.html",
+                {"email": pending_registration["email"]},
+            )
+
+        username = pending_registration["username"]
+        email = pending_registration["email"]
+        password = pending_registration["password"]
+
+        if User.objects.filter(username=username).exists():
+            request.session.pop(otp_session_key, None)
+            messages.error(request, "Username already exists. Please register again.")
+            return redirect("register")
+
+        if User.objects.filter(email__iexact=email).exists():
+            request.session.pop(otp_session_key, None)
+            messages.error(request, "Email already exists. Please register again.")
+            return redirect("register")
+
+        User.objects.create_user(username=username, email=email, password=password)
+        request.session.pop(otp_session_key, None)
+        messages.success(request, "Account created successfully. Please log in.")
+        return redirect("login")
+
+    return render(
+        request,
+        "registration/verify_otp.html",
+        {"email": pending_registration["email"]},
+    )
 
 def login_view(request):
     if request.method == "POST":
@@ -650,8 +732,6 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
 
     return render(request, "registration/login.html")
-from django.contrib.auth.models import User
-from django.http import HttpResponse
 
 def force_create_user(request):
     if not User.objects.filter(username="admin").exists():
