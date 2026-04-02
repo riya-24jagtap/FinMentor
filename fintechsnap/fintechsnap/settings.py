@@ -7,8 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-SECRET_KEY = 'django-insecure-m8_k#e9@ioe^k0vd3pq89)8)o!&imagc25g)b%uu20l+=#d!j('
 
 DEBUG = os.environ.get("RENDER") is None
 
