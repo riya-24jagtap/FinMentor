@@ -3,7 +3,9 @@ __pycache__/
 *.pyc
 
 # Virtual environments
+.env
 venv/
+venv*/
 venv311/
 
 # Database
